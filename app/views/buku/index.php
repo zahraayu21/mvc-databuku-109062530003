@@ -8,8 +8,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Data Buku | MVC Data Buku</title>
+
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             font-family: Arial, sans-serif;
@@ -28,7 +31,9 @@
             box-shadow: 0 3px 12px #00000010;
         }
 
-        h1 { margin-top: 0; }
+        h1 {
+            margin-top: 0;
+        }
 
         .btn {
             display: inline-block;
@@ -42,10 +47,21 @@
             margin: 2px;
         }
 
-        .primary { background: #2563eb; }
-        .detail { background: #0891b2; }
-        .edit { background: #d97706; }
-        .delete { background: #dc2626; }
+        .primary {
+            background: #2563eb;
+        }
+
+        .detail {
+            background: #0891b2;
+        }
+
+        .edit {
+            background: #d97706;
+        }
+
+        .delete {
+            background: #dc2626;
+        }
 
         .notice {
             padding: 12px 15px;
@@ -74,19 +90,42 @@
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 12px;
             border-bottom: 1px solid #e5e7eb;
             text-align: left;
         }
 
-        th { background: #eff6ff; }
-        .empty { text-align: center; padding: 25px; color: #666; }
-        form { display: inline; }
+        th {
+            background: #eff6ff;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 25px;
+            color: #666;
+        }
+
+        form {
+            display: inline;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .container {
+                padding: 16px;
+            }
+        }
     </style>
 </head>
+
 <body>
 <div class="container">
+
     <h1>Data Buku</h1>
     <p>Kelola data buku melalui aplikasi MVC Data Buku.</p>
 
@@ -94,12 +133,32 @@
         + Tambah Buku
     </a>
 
+    <!-- Notifikasi hasil operasi -->
     <?php if ($status): ?>
-        <div class="notice <?= $status['type'] === 'success' ? 'success' : 'error' ?>">
-            <?= htmlspecialchars($status['message']) ?>
-        </div>
+        <?php if (($status['type'] ?? '') === 'success'): ?>
+            <div class="notice success"
+                 role="status"
+                 aria-live="polite">
+                <?= htmlspecialchars(
+                    $status['message'] ?? '',
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) ?>
+            </div>
+        <?php else: ?>
+            <div class="notice error"
+                 role="alert"
+                 aria-live="assertive">
+                <?= htmlspecialchars(
+                    $status['message'] ?? '',
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) ?>
+            </div>
+        <?php endif; ?>
     <?php endif; ?>
 
+    <!-- Tabel data buku -->
     <div class="table-wrapper">
         <table>
             <thead>
@@ -113,6 +172,7 @@
                     <th>Aksi</th>
                 </tr>
             </thead>
+
             <tbody>
             <?php if (empty($buku)): ?>
                 <tr>
@@ -124,28 +184,77 @@
                 <?php foreach ($buku as $i => $item): ?>
                     <tr>
                         <td><?= $i + 1 ?></td>
-                        <td><?= htmlspecialchars($item['judul']) ?></td>
-                        <td><?= htmlspecialchars($item['penulis']) ?></td>
-                        <td><?= htmlspecialchars($item['penerbit']) ?></td>
-                        <td><?= htmlspecialchars((string) $item['tahun_terbit']) ?></td>
-                        <td><?= htmlspecialchars($item['kategori']) ?></td>
+
                         <td>
-                            <a class="btn detail"
-                               href="index.php?action=detail&id=<?= (int) $item['id'] ?>">
+                            <?= htmlspecialchars(
+                                $item['judul'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </td>
+
+                        <td>
+                            <?= htmlspecialchars(
+                                $item['penulis'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </td>
+
+                        <td>
+                            <?= htmlspecialchars(
+                                $item['penerbit'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </td>
+
+                        <td>
+                            <?= htmlspecialchars(
+                                (string) $item['tahun_terbit'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </td>
+
+                        <td>
+                            <?= htmlspecialchars(
+                                $item['kategori'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </td>
+
+                        <td>
+                            <a
+                                class="btn detail"
+                                href="index.php?action=detail&id=<?= (int) $item['id'] ?>"
+                            >
                                 Detail
                             </a>
 
-                            <a class="btn edit"
-                               href="index.php?action=edit&id=<?= (int) $item['id'] ?>">
+                            <a
+                                class="btn edit"
+                                href="index.php?action=edit&id=<?= (int) $item['id'] ?>"
+                            >
                                 Edit
                             </a>
 
-                            <form action="index.php?action=delete"
-                                  method="POST"
-                                  onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
-                                <input type="hidden" name="id"
-                                       value="<?= (int) $item['id'] ?>">
-                                <button type="submit" class="btn delete">
+                            <form
+                                action="index.php?action=delete"
+                                method="POST"
+                                onsubmit="return confirm('Yakin ingin menghapus buku ini?')"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="id"
+                                    value="<?= (int) $item['id'] ?>"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="btn delete"
+                                >
                                     Hapus
                                 </button>
                             </form>
@@ -156,6 +265,7 @@
             </tbody>
         </table>
     </div>
+
 </div>
 </body>
 </html>
