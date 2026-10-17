@@ -11,10 +11,16 @@ class BukuController
         $this->model = new Buku($pdo);
     }
 
-    // Menampilkan seluruh data buku
+    // Menampilkan data buku dan melakukan pencarian
     public function index(): void
     {
-        $buku = $this->model->getAll();
+        $keyword = trim($_GET['keyword'] ?? '');
+
+        if ($keyword !== '') {
+            $buku = $this->model->search($keyword);
+        } else {
+            $buku = $this->model->getAll();
+        }
 
         $status = $_SESSION['status'] ?? null;
         unset($_SESSION['status']);

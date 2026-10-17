@@ -1,6 +1,7 @@
 <?php
 /** @var array $buku */
 /** @var array|null $status */
+/** @var string $keyword */
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -79,6 +80,38 @@
             color: #991b1b;
         }
 
+        /* Form pencarian */
+        .search-form {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .search-input:focus {
+            outline: 2px solid #93c5fd;
+            border-color: #2563eb;
+        }
+
+        .secondary {
+            background: #64748b;
+        }
+
+        .result-info {
+            margin-top: 18px;
+            color: #555;
+            font-size: 14px;
+        }
+
         .table-wrapper {
             overflow-x: auto;
             margin-top: 20px;
@@ -107,7 +140,11 @@
             color: #666;
         }
 
-        form {
+        .actions {
+            white-space: nowrap;
+        }
+
+        .delete-form {
             display: inline;
         }
 
@@ -119,6 +156,10 @@
             .container {
                 padding: 16px;
             }
+
+            .search-input {
+                min-width: 100%;
+            }
         }
     </style>
 </head>
@@ -127,11 +168,43 @@
 <div class="container">
 
     <h1>Data Buku</h1>
-    <p>Kelola data buku melalui aplikasi MVC Data Buku.</p>
+    <p>Kelola dan cari data buku melalui aplikasi MVC Data Buku.</p>
 
     <a href="index.php?action=create" class="btn primary">
         + Tambah Buku
     </a>
+
+    <!-- Form pencarian buku -->
+    <form action="index.php" method="GET" class="search-form">
+        <input
+            type="hidden"
+            name="action"
+            value="index"
+        >
+
+        <input
+            type="search"
+            name="keyword"
+            class="search-input"
+            placeholder="Cari berdasarkan judul atau penulis..."
+            value="<?= htmlspecialchars(
+                $keyword ?? '',
+                ENT_QUOTES,
+                'UTF-8'
+            ) ?>"
+            aria-label="Cari berdasarkan judul atau penulis"
+        >
+
+        <button type="submit" class="btn primary">
+            Cari
+        </button>
+
+        <?php if (!empty($keyword)): ?>
+            <a href="index.php" class="btn secondary">
+                Reset
+            </a>
+        <?php endif; ?>
+    </form>
 
     <!-- Notifikasi hasil operasi -->
     <?php if ($status): ?>
@@ -158,6 +231,21 @@
         <?php endif; ?>
     <?php endif; ?>
 
+    <!-- Informasi hasil pencarian -->
+    <?php if (!empty($keyword)): ?>
+        <p class="result-info">
+            Hasil pencarian untuk
+            <strong>
+                "<?= htmlspecialchars(
+                    $keyword,
+                    ENT_QUOTES,
+                    'UTF-8'
+                ) ?>"
+            </strong>:
+            <?= count($buku) ?> buku ditemukan.
+        </p>
+    <?php endif; ?>
+
     <!-- Tabel data buku -->
     <div class="table-wrapper">
         <table>
@@ -177,7 +265,11 @@
             <?php if (empty($buku)): ?>
                 <tr>
                     <td colspan="7" class="empty">
-                        Belum ada data buku.
+                        <?php if (!empty($keyword)): ?>
+                            Buku tidak ditemukan. Coba kata kunci lain.
+                        <?php else: ?>
+                            Belum ada data buku.
+                        <?php endif; ?>
                     </td>
                 </tr>
             <?php else: ?>
@@ -225,7 +317,7 @@
                             ) ?>
                         </td>
 
-                        <td>
+                        <td class="actions">
                             <a
                                 class="btn detail"
                                 href="index.php?action=detail&id=<?= (int) $item['id'] ?>"
@@ -241,6 +333,7 @@
                             </a>
 
                             <form
+                                class="delete-form"
                                 action="index.php?action=delete"
                                 method="POST"
                                 onsubmit="return confirm('Yakin ingin menghapus buku ini?')"

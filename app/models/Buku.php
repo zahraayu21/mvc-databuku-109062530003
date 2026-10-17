@@ -13,7 +13,26 @@ class Buku
     public function getAll(): array
     {
         $sql = "SELECT * FROM buku ORDER BY id DESC";
+
         return $this->pdo->query($sql)->fetchAll();
+    }
+
+    // Mencari buku berdasarkan judul atau penulis
+    public function search(string $keyword): array
+    {
+        $sql = "SELECT * FROM buku
+                WHERE judul LIKE :judul
+                   OR penulis LIKE :penulis
+                ORDER BY id DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute([
+            'judul' => '%' . $keyword . '%',
+            'penulis' => '%' . $keyword . '%'
+        ]);
+
+        return $stmt->fetchAll();
     }
 
     // Mengambil satu buku berdasarkan ID
