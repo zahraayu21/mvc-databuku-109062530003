@@ -11,15 +11,29 @@ class BukuController
         $this->model = new Buku($pdo);
     }
 
-    // Menampilkan data buku dan melakukan pencarian
+    // Menampilkan data buku, pencarian, dan pengurutan
     public function index(): void
     {
         $keyword = trim($_GET['keyword'] ?? '');
 
+        $sortOptions = [
+            'terbaru',
+            'judul_asc',
+            'judul_desc',
+            'tahun_desc',
+            'tahun_asc'
+        ];
+
+        $sort = $_GET['sort'] ?? 'terbaru';
+
+        if (!in_array($sort, $sortOptions, true)) {
+            $sort = 'terbaru';
+        }
+
         if ($keyword !== '') {
-            $buku = $this->model->search($keyword);
+            $buku = $this->model->search($keyword, $sort);
         } else {
-            $buku = $this->model->getAll();
+            $buku = $this->model->getAll($sort);
         }
 
         $status = $_SESSION['status'] ?? null;
@@ -168,14 +182,12 @@ class BukuController
     {
         $errors = [];
 
-        // Memastikan semua kolom wajib diisi
         foreach ($data as $field => $value) {
             if ($value === '') {
                 $errors[$field] = 'Kolom ini wajib diisi.';
             }
         }
 
-        // Memastikan panjang teks sesuai struktur database
         $batasPanjang = [
             'judul' => 150,
             'penulis' => 100,
@@ -193,7 +205,6 @@ class BukuController
             }
         }
 
-        // Memvalidasi tahun terbit
         $tahun = $data['tahun_terbit'];
         $tahunSekarang = (int) date('Y');
 
@@ -210,7 +221,6 @@ class BukuController
                 $tahunSekarang . '.';
         }
 
-        // Memvalidasi stok: harus bilangan bulat dan tidak negatif
         $stok = $data['stok'];
 
         if (

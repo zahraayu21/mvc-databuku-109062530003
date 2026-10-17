@@ -9,21 +9,25 @@ class Buku
         $this->pdo = $pdo;
     }
 
-    // Mengambil seluruh data buku
-    public function getAll(): array
+    // Mengambil seluruh data buku dengan pengurutan
+    public function getAll(string $sort = 'terbaru'): array
     {
-        $sql = "SELECT * FROM buku ORDER BY id DESC";
+        $orderBy = $this->getOrderBy($sort);
+
+        $sql = "SELECT * FROM buku ORDER BY $orderBy";
 
         return $this->pdo->query($sql)->fetchAll();
     }
 
     // Mencari buku berdasarkan judul atau penulis
-    public function search(string $keyword): array
+    public function search(string $keyword, string $sort = 'terbaru'): array
     {
+        $orderBy = $this->getOrderBy($sort);
+
         $sql = "SELECT * FROM buku
                 WHERE judul LIKE :judul
                    OR penulis LIKE :penulis
-                ORDER BY id DESC";
+                ORDER BY $orderBy";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -33,6 +37,20 @@ class Buku
         ]);
 
         return $stmt->fetchAll();
+    }
+
+    // Menentukan pengurutan yang diizinkan
+    private function getOrderBy(string $sort): string
+    {
+        $orders = [
+            'terbaru' => 'id DESC',
+            'judul_asc' => 'judul ASC, id DESC',
+            'judul_desc' => 'judul DESC, id DESC',
+            'tahun_desc' => 'tahun_terbit DESC, id DESC',
+            'tahun_asc' => 'tahun_terbit ASC, id DESC'
+        ];
+
+        return $orders[$sort] ?? $orders['terbaru'];
     }
 
     // Mengambil satu buku berdasarkan ID
@@ -47,7 +65,7 @@ class Buku
         return $stmt->fetch();
     }
 
-    // Menambahkan buku beserta stok
+    // Menambahkan buku
     public function create(array $data): bool
     {
         $sql = "INSERT INTO buku
@@ -67,7 +85,7 @@ class Buku
         ]);
     }
 
-    // Memperbarui data buku beserta stok
+    // Memperbarui buku
     public function update(int $id, array $data): bool
     {
         $sql = "UPDATE buku SET

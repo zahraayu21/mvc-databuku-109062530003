@@ -2,6 +2,7 @@
 /** @var array $buku */
 /** @var array|null $status */
 /** @var string $keyword */
+/** @var string $sort */
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -48,6 +49,7 @@
         .detail { background: #0891b2; }
         .edit { background: #d97706; }
         .delete { background: #dc2626; }
+        .secondary { background: #64748b; }
 
         .notice {
             padding: 12px 15px;
@@ -86,7 +88,13 @@
             border-color: #2563eb;
         }
 
-        .secondary { background: #64748b; }
+        .sort-select {
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 5px;
+            font-size: 14px;
+            background: white;
+        }
 
         .result-info {
             margin-top: 18px;
@@ -140,6 +148,7 @@
         + Tambah Buku
     </a>
 
+    <!-- Form pencarian dan pengurutan -->
     <form action="index.php" method="GET" class="search-form">
         <input type="hidden" name="action" value="index">
 
@@ -152,13 +161,32 @@
             aria-label="Cari berdasarkan judul atau penulis"
         >
 
-        <button type="submit" class="btn primary">Cari</button>
+        <select name="sort" class="sort-select" aria-label="Urutkan buku">
+            <option value="terbaru" <?= ($sort ?? 'terbaru') === 'terbaru' ? 'selected' : '' ?>>
+                Terbaru Ditambahkan
+            </option>
+            <option value="judul_asc" <?= ($sort ?? '') === 'judul_asc' ? 'selected' : '' ?>>
+                Judul A–Z
+            </option>
+            <option value="judul_desc" <?= ($sort ?? '') === 'judul_desc' ? 'selected' : '' ?>>
+                Judul Z–A
+            </option>
+            <option value="tahun_desc" <?= ($sort ?? '') === 'tahun_desc' ? 'selected' : '' ?>>
+                Tahun Terbaru
+            </option>
+            <option value="tahun_asc" <?= ($sort ?? '') === 'tahun_asc' ? 'selected' : '' ?>>
+                Tahun Terlama
+            </option>
+        </select>
 
-        <?php if (!empty($keyword)): ?>
+        <button type="submit" class="btn primary">Terapkan</button>
+
+        <?php if (!empty($keyword) || ($sort ?? 'terbaru') !== 'terbaru'): ?>
             <a href="index.php" class="btn secondary">Reset</a>
         <?php endif; ?>
     </form>
 
+    <!-- Notifikasi -->
     <?php if ($status): ?>
         <?php if (($status['type'] ?? '') === 'success'): ?>
             <div class="notice success" role="status" aria-live="polite">
@@ -171,6 +199,7 @@
         <?php endif; ?>
     <?php endif; ?>
 
+    <!-- Informasi hasil pencarian -->
     <?php if (!empty($keyword)): ?>
         <p class="result-info">
             Hasil pencarian untuk
@@ -179,6 +208,7 @@
         </p>
     <?php endif; ?>
 
+    <!-- Tabel data buku -->
     <div class="table-wrapper">
         <table>
             <thead>
@@ -209,30 +239,12 @@
                 <?php foreach ($buku as $i => $item): ?>
                     <tr>
                         <td><?= $i + 1 ?></td>
-
-                        <td>
-                            <?= htmlspecialchars($item['judul'], ENT_QUOTES, 'UTF-8') ?>
-                        </td>
-
-                        <td>
-                            <?= htmlspecialchars($item['penulis'], ENT_QUOTES, 'UTF-8') ?>
-                        </td>
-
-                        <td>
-                            <?= htmlspecialchars($item['penerbit'], ENT_QUOTES, 'UTF-8') ?>
-                        </td>
-
-                        <td>
-                            <?= htmlspecialchars((string) $item['tahun_terbit'], ENT_QUOTES, 'UTF-8') ?>
-                        </td>
-
-                        <td>
-                            <?= htmlspecialchars($item['kategori'], ENT_QUOTES, 'UTF-8') ?>
-                        </td>
-
-                        <td>
-                            <?= (int) ($item['stok'] ?? 0) ?>
-                        </td>
+                        <td><?= htmlspecialchars($item['judul'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars($item['penulis'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars($item['penerbit'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars((string) $item['tahun_terbit'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= htmlspecialchars($item['kategori'], ENT_QUOTES, 'UTF-8') ?></td>
+                        <td><?= (int) ($item['stok'] ?? 0) ?></td>
 
                         <td class="actions">
                             <a
