@@ -1,0 +1,11 @@
+CREATE DATABASE IF NOT EXISTS mvc_buku;
+USE mvc_buku;
+
+CREATE TABLE IF NOT EXISTS buku (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    judul VARCHAR(150) NOT NULL,
+    penulis VARCHAR(100) NOT NULL,
+    penerbit VARCHAR(100) NOT NULL,
+    tahun_terbit YEAR NOT NULL,
+    kategori VARCHAR(50) NOT NULL
+);
