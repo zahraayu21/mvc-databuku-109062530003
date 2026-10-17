@@ -11,7 +11,7 @@ class BukuController
         $this->model = new Buku($pdo);
     }
 
-    // Menampilkan daftar buku
+    // Menampilkan seluruh data buku
     public function index(): void
     {
         $buku = $this->model->getAll();
@@ -35,7 +35,7 @@ class BukuController
         require __DIR__ . '/../views/buku/detail.php';
     }
 
-    // Form tambah dan proses penyimpanan
+    // Menambahkan buku baru
     public function create(): void
     {
         $data = [
@@ -52,7 +52,7 @@ class BukuController
             $data = $this->getInputData();
             $errors = $this->validate($data);
 
-            if (!$errors) {
+            if (empty($errors)) {
                 try {
                     $this->model->create($data);
 
@@ -65,6 +65,7 @@ class BukuController
                     exit;
                 } catch (PDOException $e) {
                     error_log($e->getMessage());
+
                     $errors['database'] =
                         'Buku gagal ditambahkan. Silakan coba lagi.';
                 }
@@ -74,7 +75,7 @@ class BukuController
         require __DIR__ . '/../views/buku/create.php';
     }
 
-    // Form edit dan proses pembaruan
+    // Mengubah data buku
     public function edit(int $id): void
     {
         $buku = $this->model->getById($id);
@@ -91,7 +92,7 @@ class BukuController
             $data = $this->getInputData();
             $errors = $this->validate($data);
 
-            if (!$errors) {
+            if (empty($errors)) {
                 try {
                     $this->model->update($id, $data);
 
@@ -104,6 +105,7 @@ class BukuController
                     exit;
                 } catch (PDOException $e) {
                     error_log($e->getMessage());
+
                     $errors['database'] =
                         'Buku gagal diperbarui. Silakan coba lagi.';
                 }
@@ -113,7 +115,7 @@ class BukuController
         require __DIR__ . '/../views/buku/edit.php';
     }
 
-    // Menghapus buku melalui POST
+    // Menghapus data buku
     public function delete(int $id): void
     {
         try {
@@ -141,7 +143,7 @@ class BukuController
         exit;
     }
 
-    // Mengambil data dari formulir
+    // Mengambil input dari formulir
     private function getInputData(): array
     {
         return [
@@ -153,17 +155,37 @@ class BukuController
         ];
     }
 
-    // Validasi kolom wajib dan tahun terbit
+    // Memvalidasi data buku
     private function validate(array $data): array
     {
         $errors = [];
 
+        // Memastikan semua kolom wajib diisi
         foreach ($data as $field => $value) {
             if ($value === '') {
                 $errors[$field] = 'Kolom ini wajib diisi.';
             }
         }
 
+        // Memastikan panjang teks sesuai struktur database
+        $batasPanjang = [
+            'judul' => 150,
+            'penulis' => 100,
+            'penerbit' => 100,
+            'kategori' => 50
+        ];
+
+        foreach ($batasPanjang as $field => $batas) {
+            if (
+                isset($data[$field]) &&
+                $data[$field] !== '' &&
+                mb_strlen($data[$field]) > $batas
+            ) {
+                $errors[$field] = "Maksimal $batas karakter.";
+            }
+        }
+
+        // Memvalidasi tahun terbit
         $tahun = $data['tahun_terbit'];
         $tahunSekarang = (int) date('Y');
 
