@@ -47,13 +47,13 @@ class Buku
         return $stmt->fetch();
     }
 
-    // Menambahkan buku
+    // Menambahkan buku beserta stok
     public function create(array $data): bool
     {
         $sql = "INSERT INTO buku
-                (judul, penulis, penerbit, tahun_terbit, kategori)
+                (judul, penulis, penerbit, tahun_terbit, kategori, stok)
                 VALUES
-                (:judul, :penulis, :penerbit, :tahun_terbit, :kategori)";
+                (:judul, :penulis, :penerbit, :tahun_terbit, :kategori, :stok)";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -62,11 +62,12 @@ class Buku
             'penulis' => $data['penulis'],
             'penerbit' => $data['penerbit'],
             'tahun_terbit' => $data['tahun_terbit'],
-            'kategori' => $data['kategori']
+            'kategori' => $data['kategori'],
+            'stok' => $data['stok']
         ]);
     }
 
-    // Memperbarui buku
+    // Memperbarui data buku beserta stok
     public function update(int $id, array $data): bool
     {
         $sql = "UPDATE buku SET
@@ -74,7 +75,8 @@ class Buku
                     penulis = :penulis,
                     penerbit = :penerbit,
                     tahun_terbit = :tahun_terbit,
-                    kategori = :kategori
+                    kategori = :kategori,
+                    stok = :stok
                 WHERE id = :id";
 
         $stmt = $this->pdo->prepare($sql);
@@ -85,7 +87,8 @@ class Buku
             'penulis' => $data['penulis'],
             'penerbit' => $data['penerbit'],
             'tahun_terbit' => $data['tahun_terbit'],
-            'kategori' => $data['kategori']
+            'kategori' => $data['kategori'],
+            'stok' => $data['stok']
         ]);
     }
 

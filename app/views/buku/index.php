@@ -11,9 +11,7 @@
     <title>Data Buku | MVC Data Buku</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: Arial, sans-serif;
@@ -32,9 +30,7 @@
             box-shadow: 0 3px 12px #00000010;
         }
 
-        h1 {
-            margin-top: 0;
-        }
+        h1 { margin-top: 0; }
 
         .btn {
             display: inline-block;
@@ -48,21 +44,10 @@
             margin: 2px;
         }
 
-        .primary {
-            background: #2563eb;
-        }
-
-        .detail {
-            background: #0891b2;
-        }
-
-        .edit {
-            background: #d97706;
-        }
-
-        .delete {
-            background: #dc2626;
-        }
+        .primary { background: #2563eb; }
+        .detail { background: #0891b2; }
+        .edit { background: #d97706; }
+        .delete { background: #dc2626; }
 
         .notice {
             padding: 12px 15px;
@@ -80,7 +65,6 @@
             color: #991b1b;
         }
 
-        /* Form pencarian */
         .search-form {
             display: flex;
             gap: 8px;
@@ -102,9 +86,7 @@
             border-color: #2563eb;
         }
 
-        .secondary {
-            background: #64748b;
-        }
+        .secondary { background: #64748b; }
 
         .result-info {
             margin-top: 18px;
@@ -119,20 +101,17 @@
 
         table {
             width: 100%;
-            min-width: 850px;
+            min-width: 900px;
             border-collapse: collapse;
         }
 
-        th,
-        td {
+        th, td {
             padding: 12px;
             border-bottom: 1px solid #e5e7eb;
             text-align: left;
         }
 
-        th {
-            background: #eff6ff;
-        }
+        th { background: #eff6ff; }
 
         .empty {
             text-align: center;
@@ -140,26 +119,13 @@
             color: #666;
         }
 
-        .actions {
-            white-space: nowrap;
-        }
-
-        .delete-form {
-            display: inline;
-        }
+        .actions { white-space: nowrap; }
+        .delete-form { display: inline; }
 
         @media (max-width: 600px) {
-            body {
-                padding: 12px;
-            }
-
-            .container {
-                padding: 16px;
-            }
-
-            .search-input {
-                min-width: 100%;
-            }
+            body { padding: 12px; }
+            .container { padding: 16px; }
+            .search-input { min-width: 100%; }
         }
     </style>
 </head>
@@ -174,79 +140,45 @@
         + Tambah Buku
     </a>
 
-    <!-- Form pencarian buku -->
     <form action="index.php" method="GET" class="search-form">
-        <input
-            type="hidden"
-            name="action"
-            value="index"
-        >
+        <input type="hidden" name="action" value="index">
 
         <input
             type="search"
             name="keyword"
             class="search-input"
             placeholder="Cari berdasarkan judul atau penulis..."
-            value="<?= htmlspecialchars(
-                $keyword ?? '',
-                ENT_QUOTES,
-                'UTF-8'
-            ) ?>"
+            value="<?= htmlspecialchars($keyword ?? '', ENT_QUOTES, 'UTF-8') ?>"
             aria-label="Cari berdasarkan judul atau penulis"
         >
 
-        <button type="submit" class="btn primary">
-            Cari
-        </button>
+        <button type="submit" class="btn primary">Cari</button>
 
         <?php if (!empty($keyword)): ?>
-            <a href="index.php" class="btn secondary">
-                Reset
-            </a>
+            <a href="index.php" class="btn secondary">Reset</a>
         <?php endif; ?>
     </form>
 
-    <!-- Notifikasi hasil operasi -->
     <?php if ($status): ?>
         <?php if (($status['type'] ?? '') === 'success'): ?>
-            <div class="notice success"
-                 role="status"
-                 aria-live="polite">
-                <?= htmlspecialchars(
-                    $status['message'] ?? '',
-                    ENT_QUOTES,
-                    'UTF-8'
-                ) ?>
+            <div class="notice success" role="status" aria-live="polite">
+                <?= htmlspecialchars($status['message'] ?? '', ENT_QUOTES, 'UTF-8') ?>
             </div>
         <?php else: ?>
-            <div class="notice error"
-                 role="alert"
-                 aria-live="assertive">
-                <?= htmlspecialchars(
-                    $status['message'] ?? '',
-                    ENT_QUOTES,
-                    'UTF-8'
-                ) ?>
+            <div class="notice error" role="alert" aria-live="assertive">
+                <?= htmlspecialchars($status['message'] ?? '', ENT_QUOTES, 'UTF-8') ?>
             </div>
         <?php endif; ?>
     <?php endif; ?>
 
-    <!-- Informasi hasil pencarian -->
     <?php if (!empty($keyword)): ?>
         <p class="result-info">
             Hasil pencarian untuk
-            <strong>
-                "<?= htmlspecialchars(
-                    $keyword,
-                    ENT_QUOTES,
-                    'UTF-8'
-                ) ?>"
-            </strong>:
+            <strong>"<?= htmlspecialchars($keyword, ENT_QUOTES, 'UTF-8') ?>"</strong>:
             <?= count($buku) ?> buku ditemukan.
         </p>
     <?php endif; ?>
 
-    <!-- Tabel data buku -->
     <div class="table-wrapper">
         <table>
             <thead>
@@ -257,6 +189,7 @@
                     <th>Penerbit</th>
                     <th>Tahun</th>
                     <th>Kategori</th>
+                    <th>Stok</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
@@ -264,7 +197,7 @@
             <tbody>
             <?php if (empty($buku)): ?>
                 <tr>
-                    <td colspan="7" class="empty">
+                    <td colspan="8" class="empty">
                         <?php if (!empty($keyword)): ?>
                             Buku tidak ditemukan. Coba kata kunci lain.
                         <?php else: ?>
@@ -278,59 +211,39 @@
                         <td><?= $i + 1 ?></td>
 
                         <td>
-                            <?= htmlspecialchars(
-                                $item['judul'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
+                            <?= htmlspecialchars($item['judul'], ENT_QUOTES, 'UTF-8') ?>
                         </td>
 
                         <td>
-                            <?= htmlspecialchars(
-                                $item['penulis'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
+                            <?= htmlspecialchars($item['penulis'], ENT_QUOTES, 'UTF-8') ?>
                         </td>
 
                         <td>
-                            <?= htmlspecialchars(
-                                $item['penerbit'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
+                            <?= htmlspecialchars($item['penerbit'], ENT_QUOTES, 'UTF-8') ?>
                         </td>
 
                         <td>
-                            <?= htmlspecialchars(
-                                (string) $item['tahun_terbit'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
+                            <?= htmlspecialchars((string) $item['tahun_terbit'], ENT_QUOTES, 'UTF-8') ?>
                         </td>
 
                         <td>
-                            <?= htmlspecialchars(
-                                $item['kategori'],
-                                ENT_QUOTES,
-                                'UTF-8'
-                            ) ?>
+                            <?= htmlspecialchars($item['kategori'], ENT_QUOTES, 'UTF-8') ?>
+                        </td>
+
+                        <td>
+                            <?= (int) ($item['stok'] ?? 0) ?>
                         </td>
 
                         <td class="actions">
                             <a
                                 class="btn detail"
                                 href="index.php?action=detail&id=<?= (int) $item['id'] ?>"
-                            >
-                                Detail
-                            </a>
+                            >Detail</a>
 
                             <a
                                 class="btn edit"
                                 href="index.php?action=edit&id=<?= (int) $item['id'] ?>"
-                            >
-                                Edit
-                            </a>
+                            >Edit</a>
 
                             <form
                                 class="delete-form"
@@ -344,10 +257,7 @@
                                     value="<?= (int) $item['id'] ?>"
                                 >
 
-                                <button
-                                    type="submit"
-                                    class="btn delete"
-                                >
+                                <button type="submit" class="btn delete">
                                     Hapus
                                 </button>
                             </form>

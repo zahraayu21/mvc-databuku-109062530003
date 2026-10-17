@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS buku (
     penulis VARCHAR(100) NOT NULL,
     penerbit VARCHAR(100) NOT NULL,
     tahun_terbit YEAR NOT NULL,
-    kategori VARCHAR(50) NOT NULL
+    kategori VARCHAR(50) NOT NULL,
+    stok INT UNSIGNED NOT NULL DEFAULT 0
 );

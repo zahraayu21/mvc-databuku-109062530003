@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Buku</title>
     <style>
+        * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f4f6f9; padding: 30px; color: #222; }
         .container { max-width: 650px; margin: auto; padding: 28px; background: white; border-radius: 10px; }
         .item { padding: 14px 0; border-bottom: 1px solid #e5e7eb; }
@@ -22,27 +23,32 @@
 
     <div class="item">
         <span class="label">Judul Buku</span>
-        <?= htmlspecialchars($buku['judul']) ?>
+        <?= htmlspecialchars($buku['judul'], ENT_QUOTES, 'UTF-8') ?>
     </div>
 
     <div class="item">
         <span class="label">Penulis</span>
-        <?= htmlspecialchars($buku['penulis']) ?>
+        <?= htmlspecialchars($buku['penulis'], ENT_QUOTES, 'UTF-8') ?>
     </div>
 
     <div class="item">
         <span class="label">Penerbit</span>
-        <?= htmlspecialchars($buku['penerbit']) ?>
+        <?= htmlspecialchars($buku['penerbit'], ENT_QUOTES, 'UTF-8') ?>
     </div>
 
     <div class="item">
         <span class="label">Tahun Terbit</span>
-        <?= htmlspecialchars((string) $buku['tahun_terbit']) ?>
+        <?= htmlspecialchars((string) $buku['tahun_terbit'], ENT_QUOTES, 'UTF-8') ?>
     </div>
 
     <div class="item">
         <span class="label">Kategori</span>
-        <?= htmlspecialchars($buku['kategori']) ?>
+        <?= htmlspecialchars($buku['kategori'], ENT_QUOTES, 'UTF-8') ?>
+    </div>
+
+    <div class="item">
+        <span class="label">Stok Buku</span>
+        <?= (int) ($buku['stok'] ?? 0) ?> buku
     </div>
 
     <a class="btn"

@@ -49,7 +49,8 @@ class BukuController
             'penulis' => '',
             'penerbit' => '',
             'tahun_terbit' => '',
-            'kategori' => ''
+            'kategori' => '',
+            'stok' => '0'
         ];
 
         $errors = [];
@@ -157,7 +158,8 @@ class BukuController
             'penulis' => trim($_POST['penulis'] ?? ''),
             'penerbit' => trim($_POST['penerbit'] ?? ''),
             'tahun_terbit' => trim($_POST['tahun_terbit'] ?? ''),
-            'kategori' => trim($_POST['kategori'] ?? '')
+            'kategori' => trim($_POST['kategori'] ?? ''),
+            'stok' => trim($_POST['stok'] ?? '')
         ];
     }
 
@@ -206,6 +208,20 @@ class BukuController
             $errors['tahun_terbit'] =
                 'Tahun terbit harus antara 1901 dan ' .
                 $tahunSekarang . '.';
+        }
+
+        // Memvalidasi stok: harus bilangan bulat dan tidak negatif
+        $stok = $data['stok'];
+
+        if (
+            $stok !== '' &&
+            (
+                !ctype_digit($stok) ||
+                filter_var($stok, FILTER_VALIDATE_INT) === false
+            )
+        ) {
+            $errors['stok'] =
+                'Stok harus berupa bilangan bulat nonnegatif.';
         }
 
         return $errors;

@@ -57,6 +57,11 @@
         <input id="kategori" name="kategori" maxlength="50" required
                value="<?= htmlspecialchars($data['kategori']) ?>">
 
+        <label for="stok">Stok Buku</label>
+        <input type="number" id="stok" name="stok"
+               min="0" step="1" required
+               value="<?= htmlspecialchars((string) ($data['stok'] ?? '0')) ?>">
+
         <button type="submit" class="btn">Simpan Buku</button>
         <a href="index.php" class="btn secondary">Batal</a>
     </form>
